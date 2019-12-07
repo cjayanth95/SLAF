@@ -21,11 +21,11 @@ def include_activation(name):
 
 def lr(iteration):
   if iteration < 3000:
-    return 1e-2
+    return 0.001
   elif iteration < 5000:
-    return 1e-3
+    return 0.000001
   elif iteration < 15000:
-    1e-4
+    0.000001
   return 5e-5
 
 
@@ -119,13 +119,13 @@ def max_pool_2x2(x):
 
 def weight_variable(shape):
   """weight_variable generates a weight variable of a given shape."""
-  initial = tf.truncated_normal(shape, stddev=0.1)
+  initial = tf.truncated_normal(shape, name="scalar_a", dtype=tf.float32, mean=.5, stddev=.01)
   return tf.Variable(initial)
 
 
 def bias_variable(shape):
   """bias_variable generates a bias variable of a given shape."""
-  initial = tf.constant(0.1, shape=shape)
+  initial = tf.constant(.5, name="scalar_a", dtype=tf.float32, shape=shape)
   return tf.Variable(initial)
 
 
@@ -156,7 +156,7 @@ def main(_):
                                                             logits=y_conv)
   cross_entropy = tf.reduce_mean(cross_entropy)
 
-  with tf.name_scope('adam_optimizer'):
+  with tf.name_scope('adam'):
     t1 = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
     # t2 = tf.train.GradientDescentOptimizer(learning_rate).minimize(l2_loss)
     # train_step = tf.group(t1, t2)
@@ -175,7 +175,7 @@ def main(_):
   config.gpu_options.allow_growth=True
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    for i in range(25000):
+    for i in range(3000):
       batch = mnist.train.next_batch(50)
       if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={
@@ -191,7 +191,7 @@ def main(_):
         acc.append(a1/2 + a2/2)
 
       # print(batch[0][0])
-      train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5, learning_rate: lr(i), is_train: True})
+      train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1, learning_rate: lr(i), is_train: True})
 
     a1 = accuracy.eval(feed_dict={
         x: mnist.test.images[0:5000, :], y_: mnist.test.labels[0:5000, :], keep_prob: 1.0, is_train: False})
