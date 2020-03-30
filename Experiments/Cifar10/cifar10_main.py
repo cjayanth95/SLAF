@@ -26,8 +26,8 @@ import tensorflow as tf  # pylint: disable=g-bad-import-order
 
 from official.utils.flags import core as flags_core
 from official.utils.logs import logger
-from official.resnet import resnet_model
-from official.resnet import resnet_run_loop
+import resnet_model
+import resnet_run_loop
 
 _HEIGHT = 32
 _WIDTH = 32
@@ -51,8 +51,8 @@ DATASET_NAME = 'CIFAR-10'
 ###############################################################################
 def get_filenames(is_training, data_dir):
   """Returns a list of filenames."""
-  data_dir = os.path.join(data_dir, 'cifar')
-
+  data_dir = os.path.join(data_dir, 'cifar10_data')
+  print('----------------' + data_dir)
   assert os.path.exists(data_dir), (
       'Run cifar10_download_and_extract.py first to download and extract the '
       'CIFAR-10 data.')
@@ -232,7 +232,7 @@ def cifar10_model_fn(features, labels, mode, params):
 def define_cifar_flags():
   resnet_run_loop.define_resnet_flags()
   flags.adopt_module_key_flags(resnet_run_loop)
-  flags_core.set_defaults(data_dir='cifar10',
+  flags_core.set_defaults(data_dir='/tmp',
                           model_dir='/tmp/cifar10_model',
                           resnet_size='32',
                           train_epochs=250,
