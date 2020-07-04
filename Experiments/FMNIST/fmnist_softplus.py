@@ -137,7 +137,7 @@ def bias_variable(shape):
 
 def main(_):
   # Import data
-  mnist = input_data.read_data_sets("/drive/My Drive/fmnist", one_hot=True)
+  mnist = input_data.read_data_sets('data/fashion', source_url='http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/', one_hot=True)
 
   # Create the model
   x = tf.placeholder(tf.float32, [None, 784])
